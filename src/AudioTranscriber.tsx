@@ -79,93 +79,94 @@ const AudioTranscriber = () => {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-black text-white relative">
+      {/* Video Background */}
       <video
         autoPlay
         loop
         muted
-        className="absolute w-full h-full object-cover z-0"
+        className="absolute w-full h-full object-cover opacity-30"
       >
-        <source src="/path-to-your-video.mp4" type="video/mp4" />
+        <source src="/public/5453622-uhd_3840_2160_24fps_2.mp4" type="video/mp4" />
       </video>
 
-      <div className="max-w-2xl mx-auto p-6">
-        <h2 className="text-2xl font-bold mb-4 text-white">
-          Audio Transcription
-        </h2>
+      {/* Content Card */}
+      <div className="relative z-10">
+        <div className="max-w-2xl mx-auto p-8">
+          <div className="bg-gray-900 backdrop-blur-sm rounded-xl shadow-2xl p-8">
+            <h2 className="text-2xl font-bold mb-4 text-white text-center">
+              Audio Transcription
+            </h2>
 
-        <div className="mb-6">
-          <label className="block text-sm font-medium text-white mb-2">
-            OpenAI API Key
-          </label>
-          <input
-            type="password"
-            value={apiKey}
-            onChange={handleApiKeyChange}
-            placeholder="Enter your OpenAI API key"
-            className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500 text-white"
-          />
-        </div>
-
-        <div className="mb-4">
-          <input
-            type="file"
-            accept="audio/mpeg"
-            onChange={handleFileChange}
-            className="block w-full text-sm text-white
-              file:mr-4 file:py-2 file:px-4
-              file:rounded-md file:border-0
-              file:text-sm file:font-semibold
-              file:bg-orange-500 file:text-white
-              hover:file:bg-orange-600"
-          />
-        </div>
-
-        <div className="flex gap-2">
-          <button
-            onClick={processAudio}
-            disabled={!audioFile || isLoading}
-            className={`flex-1 py-2 px-4 rounded-md text-white font-medium
-              ${
-                !audioFile || isLoading
-                  ? 'bg-gray-600'
-                  : 'bg-orange-500 hover:bg-orange-600'
-              }`}
-          >
-            {isLoading ? 'Processing...' : 'Transcribe Audio'}
-          </button>
-
-          <button
-            onClick={downloadSRT}
-            disabled={!transcription}
-            className={`py-2 px-4 rounded-md text-white font-medium ${
-              transcription
-                ? 'bg-orange-500 hover:bg-orange-600'
-                : 'bg-gray-600'
-            }`}
-          >
-            Download SRT
-          </button>
-        </div>
-
-        {transcription && (
-          <div className="mt-6">
-            <h3 className="text-lg font-semibold mb-2 text-white">
-              Transcription:
-            </h3>
-            <div className="p-4 bg-gray-800 rounded-md">
-              <p className="text-white">{transcription}</p>
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-white mb-2">
+                OpenAI API Key
+              </label>
+              <input
+                type="password"
+                value={apiKey}
+                onChange={handleApiKeyChange}
+                placeholder="Enter your OpenAI API key"
+                className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500 text-white"
+              />
             </div>
-          </div>
-        )}
 
-        <footer className="mt-8 text-center text-gray-400 py-4 border-t border-gray-800">
-          <p>by Caprinosol</p>
-        </footer>
+            <div className="mb-4">
+              <input
+                type="file"
+                accept="audio/mpeg"
+                onChange={handleFileChange}
+                className="block w-full text-sm text-white
+                  file:mr-4 file:py-2 file:px-4
+                  file:rounded-md file:border-0
+                  file:text-sm file:font-semibold
+                  file:bg-orange-500 file:text-white
+                  hover:file:bg-orange-600"
+              />
+            </div>
+
+            <div className="flex gap-2">
+              <button
+                onClick={processAudio}
+                disabled={!audioFile || isLoading}
+                className={`flex-1 py-2 px-4 rounded-md text-white font-medium
+                  ${!audioFile || isLoading ? 'bg-gray-600' : 'bg-orange-500 hover:bg-orange-600'}`}
+              >
+                {isLoading ? 'Processing...' : 'Transcribe Audio'}
+              </button>
+
+              <button
+                onClick={downloadSRT}
+                disabled={!transcription}
+                className={`py-2 px-4 rounded-md text-white font-medium 
+                  ${transcription ? 'bg-orange-500 hover:bg-orange-600' : 'bg-gray-600'}`}
+              >
+                Download SRT
+              </button>
+            </div>
+
+            {transcription && (
+              <div className="mt-6">
+                <h3 className="text-lg font-semibold mb-2 text-white">
+                  Transcription:
+                </h3>
+                <div className="p-4 bg-gray-800/50 backdrop-blur-sm rounded-md">
+                  <p className="text-white">{transcription}</p>
+                </div>
+              </div>
+            )}
+
+            <footer className="mt-8 text-center text-gray-400 pt-4 border-t border-gray-800">
+              <p>by Caprinosol</p>
+            </footer>
+          </div>
+        </div>
       </div>
     </div>
   );
+};
 
+export default AudioTranscriber;
   // return (
   //   <div className="max-w-2xl mx-auto p-6">
   //     <h2 className="text-2xl font-bold mb-4">Audio Transcription</h2>
@@ -232,6 +233,5 @@ const AudioTranscriber = () => {
   //     )}
   //   </div>
   // );
-};
+// };
 
-export default AudioTranscriber;
