@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 const SubtitleConverter = () => {
   const [jsonInput, setJsonInput] = useState('');
@@ -10,7 +10,7 @@ const SubtitleConverter = () => {
       const chunks = data.output.chunks;
 
       const srt = chunks
-        .map((chunk, index) => {
+        .map((chunk: { timestamp: number[], text: string }, index: number) => {
           const startTime = formatTime(chunk.timestamp[0]);
           const endTime = formatTime(chunk.timestamp[1]);
 
@@ -23,12 +23,14 @@ ${chunk.text.trim()}
         .join('');
 
       setSrtOutput(srt);
+
     } catch (error) {
+      console.error('Error converting to SRT:', error);
       setSrtOutput('Invalid JSON format');
     }
-  };
 
-  const formatTime = (seconds) => {
+  };
+  const formatTime = (seconds: number) => {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
     const secs = Math.floor(seconds % 60);

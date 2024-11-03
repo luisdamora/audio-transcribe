@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 const AudioTranscriber = () => {
-  const [audioFile, setAudioFile] = useState(null);
+  const [audioFile, setAudioFile] = useState<File | null>(null);
   const [transcription, setTranscription] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -14,14 +14,14 @@ const AudioTranscriber = () => {
     }
   }, []);
 
-  const handleApiKeyChange = (event) => {
+  const handleApiKeyChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newApiKey = event.target.value;
     setApiKey(newApiKey);
     localStorage.setItem('openai_api_key', newApiKey);
   };
 
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
     if (file && file.type === 'audio/mpeg') {
       setAudioFile(file);
     }
@@ -71,7 +71,7 @@ const AudioTranscriber = () => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `${audioFile.name.replace('.mp3', '')}.srt`;
+    a.download = `${audioFile?.name.replace('.mp3', '')}.srt`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
