@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import ApiKeyInput from './components/ApiKeyInput';
+import AudioFileInput from './components/AudioFileInput';
+import Transcription from './components/Transcription';
+import TranscribeButton from './components/TranscribeButton';
+import DownloadButton from './components/DownloadButton';
 
 const AudioTranscriber = () => {
   const [audioFile, setAudioFile] = useState<File | null>(null);
   const [transcription, setTranscription] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-
   const [apiKey, setApiKey] = useState('');
 
   useEffect(() => {
@@ -14,14 +18,12 @@ const AudioTranscriber = () => {
     }
   }, []);
 
-  const handleApiKeyChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newApiKey = event.target.value;
+  const handleApiKeyChange = (newApiKey: string) => {
     setApiKey(newApiKey);
     localStorage.setItem('openai_api_key', newApiKey);
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
+  const handleFileChange = (file: File | null) => {
     if (file && file.type === 'audio/mpeg') {
       setAudioFile(file);
     }
@@ -64,7 +66,6 @@ const AudioTranscriber = () => {
   const downloadSRT = () => {
     if (!transcription) return;
 
-    // Convert transcription to SRT format
     const srtContent = `${transcription}`;
 
     const blob = new Blob([srtContent], { type: 'text/plain' });
@@ -87,10 +88,9 @@ const AudioTranscriber = () => {
         muted
         className="absolute w-full h-full object-cover opacity-30"
       >
-        <source src="/public/5453622-uhd_3840_2160_24fps_2.mp4" type="video/mp4" />
+        <source src="/audio-transcribe/5453622-uhd_3840_2160_24fps_2.mp4" type="video/mp4" />
       </video>
 
-      {/* Content Card */}
       <div className="relative z-10">
         <div className="max-w-2xl mx-auto p-8">
           <div className="bg-gray-900 backdrop-blur-sm rounded-xl shadow-2xl p-8">
@@ -98,63 +98,15 @@ const AudioTranscriber = () => {
               Audio Transcription
             </h2>
 
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-white mb-2">
-                OpenAI API Key
-              </label>
-              <input
-                type="password"
-                value={apiKey}
-                onChange={handleApiKeyChange}
-                placeholder="Enter your OpenAI API key"
-                className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500 text-white"
-              />
-            </div>
-
-            <div className="mb-4">
-              <input
-                type="file"
-                accept="audio/mpeg"
-                onChange={handleFileChange}
-                className="block w-full text-sm text-white
-                  file:mr-4 file:py-2 file:px-4
-                  file:rounded-md file:border-0
-                  file:text-sm file:font-semibold
-                  file:bg-orange-500 file:text-white
-                  hover:file:bg-orange-600"
-              />
-            </div>
+            <ApiKeyInput apiKey={apiKey} onChange={handleApiKeyChange} />
+            <AudioFileInput onChange={handleFileChange} />
 
             <div className="flex gap-2">
-              <button
-                onClick={processAudio}
-                disabled={!audioFile || isLoading}
-                className={`flex-1 py-2 px-4 rounded-md text-white font-medium
-                  ${!audioFile || isLoading ? 'bg-gray-600' : 'bg-orange-500 hover:bg-orange-600'}`}
-              >
-                {isLoading ? 'Processing...' : 'Transcribe Audio'}
-              </button>
-
-              <button
-                onClick={downloadSRT}
-                disabled={!transcription}
-                className={`py-2 px-4 rounded-md text-white font-medium 
-                  ${transcription ? 'bg-orange-500 hover:bg-orange-600' : 'bg-gray-600'}`}
-              >
-                Download SRT
-              </button>
+              <TranscribeButton onClick={processAudio} disabled={!audioFile || isLoading} isLoading={isLoading} />
+              <DownloadButton onClick={downloadSRT} disabled={!transcription} />
             </div>
 
-            {transcription && (
-              <div className="mt-6">
-                <h3 className="text-lg font-semibold mb-2 text-white">
-                  Transcription:
-                </h3>
-                <div className="p-4 bg-gray-800/50 backdrop-blur-sm rounded-md">
-                  <p className="text-white">{transcription}</p>
-                </div>
-              </div>
-            )}
+            <Transcription transcription={transcription} />
 
             <footer className="mt-8 text-center text-gray-400 pt-4 border-t border-gray-800">
               <p>by Caprinosol</p>
@@ -167,71 +119,3 @@ const AudioTranscriber = () => {
 };
 
 export default AudioTranscriber;
-  // return (
-  //   <div className="max-w-2xl mx-auto p-6">
-  //     <h2 className="text-2xl font-bold mb-4">Audio Transcription</h2>
-
-  //     <div className="mb-6">
-  //       <label className="block text-sm font-medium text-gray-700 mb-2">
-  //         OpenAI API Key
-  //       </label>
-  //       <input
-  //         type="password"
-  //         value={apiKey}
-  //         onChange={handleApiKeyChange}
-  //         placeholder="Enter your OpenAI API key"
-  //         className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-  //       />
-  //     </div>
-
-  //     <div className="mb-4">
-  //       <input
-  //         type="file"
-  //         accept="audio/mpeg"
-  //         onChange={handleFileChange}
-  //         className="block w-full text-sm text-gray-500
-  //           file:mr-4 file:py-2 file:px-4
-  //           file:rounded-md file:border-0
-  //           file:text-sm file:font-semibold
-  //           file:bg-blue-50 file:text-blue-700
-  //           hover:file:bg-blue-100"
-  //       />
-  //     </div>
-
-  //     <div className="flex gap-2">
-  //       <button
-  //         onClick={processAudio}
-  //         disabled={!audioFile || isLoading}
-  //         className={`flex-1 py-2 px-4 rounded-md text-white font-medium
-  //           ${
-  //             !audioFile || isLoading
-  //               ? 'bg-gray-400'
-  //               : 'bg-blue-600 hover:bg-blue-700'
-  //           }`}
-  //       >
-  //         {isLoading ? 'Processing...' : 'Transcribe Audio'}
-  //       </button>
-
-  //       <button
-  //         onClick={downloadSRT}
-  //         disabled={!transcription}
-  //         className={`py-2 px-4 rounded-md text-white font-medium ${
-  //           transcription ? 'bg-green-600 hover:bg-green-700' : 'bg-gray-400'
-  //         }`}
-  //       >
-  //         Download SRT
-  //       </button>
-  //     </div>
-
-  //     {transcription && (
-  //       <div className="mt-6">
-  //         <h3 className="text-lg font-semibold mb-2">Transcription:</h3>
-  //         <div className="p-4 bg-gray-50 rounded-md">
-  //           <p>{transcription}</p>
-  //         </div>
-  //       </div>
-  //     )}
-  //   </div>
-  // );
-// };
-
